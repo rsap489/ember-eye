@@ -1,0 +1,30 @@
+.sidebar {
+    width: 200px;
+    height: 100vh; /* Full height */
+    background: #282c34;
+    color: white;
+    position: fixed;
+    top: 0; /* Ensure it's at the top */
+    left: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin: 15px 0;
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .sidebar ul li a:hover {
+    text-decoration: underline;
+  }

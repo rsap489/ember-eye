@@ -1,0 +1,15 @@
+/* Basic container style for the app */
+.app-container {
+  display: flex;
+  height: 100vh; /* Full screen height */
+  width: 100vw;
+}
+
+/* Content section */
+.content {
+  margin-left: 230px; /* Account for sidebar */
+  padding: 40px;
+  flex-grow: 1;
+  background-color: #f9f9f9; /* Light background color for the content area */
+  overflow-y: auto; /* Allows scrolling if the content overflows */
+}
