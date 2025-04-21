@@ -1,6 +1,6 @@
 import serial
 
-ser = serial.Serial(port="COM11", baudrate=115200)
+ser = serial.Serial(port="COM14", baudrate=115200)
 
 
 try:

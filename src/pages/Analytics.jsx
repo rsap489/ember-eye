@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { format, parseISO } from 'date-fns';
 
 const Analytics = () => {
   const [data, setData] = useState([]);
@@ -31,6 +32,7 @@ const Analytics = () => {
 
     // Initial fetch
     fetchData();
+    console.log({data})
 
     // Set an interval to fetch data every 15 seconds
     const intervalId = setInterval(() => {
@@ -64,9 +66,23 @@ const Analytics = () => {
       {/* Temperature Graph */}
       <h2>Temperature Over Time</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
+        <LineChart data={data}
+        margin={{ top: 10, right: 30, left: 20, bottom: 50 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="Date" tick={{ fontSize: 12 }} angle={-30} textAnchor="end" />
+          <XAxis
+            dataKey="Date"
+            tick={{ fontSize: 12 }}
+            angle={-30}
+            textAnchor="end"
+            tickFormatter={(str) => {
+              try {
+                return format(parseISO(str), 'MMM d, HH:mm'); // e.g., Apr 8, 14:32
+              } catch {
+                return str;
+              }
+            }}
+          />
           <YAxis label={{ value: "°C", angle: -90, position: "insideLeft" }} />
           <Tooltip />
           <Line type="monotone" dataKey="Temperature" stroke="#8884d8" strokeWidth={2} />
@@ -76,9 +92,23 @@ const Analytics = () => {
       {/* Humidity Graph */}
       <h2>Humidity Over Time</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
+        <LineChart data={data}
+        margin={{ top: 10, right: 30, left: 20, bottom: 50 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="Date" tick={{ fontSize: 12 }} angle={-30} textAnchor="end" />
+          <XAxis
+            dataKey="Date"
+            tick={{ fontSize: 12 }}
+            angle={-30}
+            textAnchor="end"
+            tickFormatter={(str) => {
+              try {
+                return format(parseISO(str), 'MMM d, HH:mm'); // e.g., Apr 8, 14:32
+              } catch {
+                return str;
+              }
+            }}
+          />
           <YAxis label={{ value: "%", angle: -90, position: "insideLeft" }} />
           <Tooltip />
           <Line type="monotone" dataKey="Humidity" stroke="#82ca9d" strokeWidth={2} />
