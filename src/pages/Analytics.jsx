@@ -67,7 +67,7 @@ const Analytics = () => {
       <h2>Temperature Over Time</h2>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}
-        margin={{ top: 10, right: 30, left: 20, bottom: 50 }}
+        margin={{ top: 10, right: 30, left: 40, bottom: 50 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -85,7 +85,7 @@ const Analytics = () => {
           />
           <YAxis label={{ value: "°C", angle: -90, position: "insideLeft" }} />
           <Tooltip />
-          <Line type="monotone" dataKey="Temperature" stroke="#8884d8" strokeWidth={2} />
+          <Line type="monotone" dataKey="Temperature" stroke="#8884d8" strokeWidth={2} dot={false}/>
         </LineChart>
       </ResponsiveContainer>
 
@@ -93,7 +93,7 @@ const Analytics = () => {
       <h2>Humidity Over Time</h2>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}
-        margin={{ top: 10, right: 30, left: 20, bottom: 50 }}
+        margin={{ top: 10, right: 30, left: 40, bottom: 50 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -111,7 +111,37 @@ const Analytics = () => {
           />
           <YAxis label={{ value: "%", angle: -90, position: "insideLeft" }} />
           <Tooltip />
-          <Line type="monotone" dataKey="Humidity" stroke="#82ca9d" strokeWidth={2} />
+          <Line type="monotone" dataKey="Humidity" stroke="#82ca9d" strokeWidth={2} dot={false}/>
+        </LineChart>
+      </ResponsiveContainer>
+
+      <h2>Pressure Over Time</h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 30, left: 40, bottom: 50 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="Date"
+            tick={{ fontSize: 12 }}
+            angle={-30}
+            textAnchor="end"
+            tickFormatter={(str) => {
+              try {
+                return format(parseISO(str), 'MMM d, HH:mm'); // e.g., Apr 8, 14:32
+              } catch {
+                return str;
+              }
+            }}
+          />
+          <YAxis 
+            label={{ value: "hPa", angle: -90, position: "insideLeft" }}
+            domain={['dataMin - 50', 'dataMax + 50']}
+            tickFormatter={(value) => Math.round(value)}
+          />
+          <Tooltip />
+          <Line type="monotone" dataKey="Pressure" stroke="#ff7300" strokeWidth={2} dot={false}/>
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -43,7 +43,12 @@ app.get('/api/data', async (req, res) => {
 
     // Choose the correct table based on the sensor value
     const tableName = `Sensor${sensor}`;
-    const query = `SELECT * FROM ${tableName} ORDER BY Date ASC`;
+    const query = `
+      SELECT *
+      FROM ${tableName}
+      WHERE Date >= DATEADD(HOUR, -48, GETDATE())
+      ORDER BY Date ASC
+    `;
 
     // Execute the query
     const result = await sql.query(query);
@@ -56,6 +61,7 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
+// Set up a route to fetch the latest temperature and check against threshold
 app.get('/api/temperature-alert', async (req, res) => {
   try {
     await sql.connect(sqlConfig);
@@ -99,6 +105,7 @@ app.get('/api/temperature-alert', async (req, res) => {
   }
 });
 
+// Set up a route to set the temperature threshold
 app.post('/api/set-threshold', async (req, res) => {
   const { sensorId, temperature } = req.body;
 
@@ -139,6 +146,62 @@ app.post('/api/set-threshold', async (req, res) => {
     res.status(500).send('Error saving temperature threshold to database');
   }
 });
+
+// Set up a route to fetch sensor locations
+app.get('/api/sensors', async (req, res) => {
+  try {
+    await sql.connect(sqlConfig);
+
+    const query = `
+      SELECT Sensor AS id, Latitude AS lat, Longitude AS lon
+      FROM SensorLoc
+      WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL
+    `;
+
+    const result = await sql.query(query);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching sensor locations');
+  }
+});
+
+// New API to get the latest temperature threshold for a sensor
+app.get('/api/get-threshold', async (req, res) => {
+  const { sensorId } = req.query;
+
+  if (!sensorId) {
+    return res.status(400).json({ error: 'Sensor ID is required' });
+  }
+
+  try {
+    await sql.connect(sqlConfig);
+
+    const request = new sql.Request();
+    request.input('sensorId', sql.Int, sensorId);
+
+    const query = `
+      SELECT TOP 1 Value
+      FROM Thresholds
+      WHERE Sensor = @sensorId AND Type = 'Temperature'
+    `;
+
+    const result = await request.query(query);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: 'Threshold not found for this sensor' });
+    }
+
+    const temperatureThreshold = result.recordset[0].Value;
+
+    res.json({ temperature: temperatureThreshold });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching temperature threshold');
+  }
+});
+
 
 // Start the server
 app.listen(port, () => {
